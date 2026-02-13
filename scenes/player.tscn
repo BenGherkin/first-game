@@ -2,6 +2,8 @@
 
 [ext_resource type="Texture2D" uid="uid://cfsd4p82x83g" path="res://assets/sprites/knight.png" id="1_3vyb7"]
 [ext_resource type="Script" uid="uid://bhqlgaeisqull" path="res://scripts/player.gd" id="1_g2els"]
+[ext_resource type="AudioStream" uid="uid://bi3aihh6egamy" path="res://assets/sounds/hurt.wav" id="3_qhqgy"]
+[ext_resource type="AudioStream" uid="uid://djyjise4qu42w" path="res://assets/sounds/jump.wav" id="4_dqkch"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_4ni07"]
 atlas = ExtResource("1_3vyb7")
@@ -204,6 +206,104 @@ animations = [{
 [sub_resource type="CircleShape2D" id="CircleShape2D_fjrip"]
 radius = 5.0
 
+[sub_resource type="Animation" id="Animation_dqkch"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape2D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("deathSound:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_qlg0r"]
+resource_name = "death"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CollisionShape2D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("deathSound:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tuyoq"]
+_data = {
+&"RESET": SubResource("Animation_dqkch"),
+&"death": SubResource("Animation_qlg0r")
+}
+
+[sub_resource type="Animation" id="Animation_tuyoq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("jumpSound:playing")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_fjrip"]
+resource_name = "jump"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("jumpSound:playing")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_smehm"]
+_data = {
+&"RESET": SubResource("Animation_tuyoq"),
+&"jump": SubResource("Animation_fjrip")
+}
+
 [node name="player" type="CharacterBody2D" unique_id=1010728638]
 z_index = 5
 collision_layer = 2
@@ -212,9 +312,24 @@ script = ExtResource("1_g2els")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1103289380]
 position = Vector2(0, -12)
 sprite_frames = SubResource("SpriteFrames_tuyoq")
-animation = &"death"
+animation = &"idle"
 autoplay = "idle"
+frame_progress = 0.6424676
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1976752165]
 position = Vector2(0, -5)
 shape = SubResource("CircleShape2D_fjrip")
+
+[node name="deathSound" type="AudioStreamPlayer2D" parent="." unique_id=294944696]
+stream = ExtResource("3_qhqgy")
+bus = &"SFX"
+
+[node name="jumpSound" type="AudioStreamPlayer2D" parent="." unique_id=2002809433]
+stream = ExtResource("4_dqkch")
+bus = &"SFX"
+
+[node name="deathNote" type="AnimationPlayer" parent="." unique_id=184654623]
+libraries/ = SubResource("AnimationLibrary_tuyoq")
+
+[node name="jumpNote" type="AnimationPlayer" parent="." unique_id=828041462]
+libraries/ = SubResource("AnimationLibrary_smehm")
